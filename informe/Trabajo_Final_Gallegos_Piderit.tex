@@ -1,0 +1,209 @@
+% Preámbulo --------------------------------------------------------------------
+\documentclass[a4paper, titlepage]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[sfdefault=true]{inter}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{framed}
+\usepackage[spanish]{babel}
+\usepackage[style=english]{csquotes}
+\usepackage[style=apa]{biblatex}
+\addbibresource{referencias.bib}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=RoyalBlue, urlcolor=RoyalBlue, citecolor=RoyalBlue}
+
+\title{Trabajo práctico final \\[1em]%
+  \large Especialización en estadística matemática \\%
+  Facultad de ciencias exactas y naturales \\%
+  Universidad de Buenos Aires}
+\author{Fernando Gallegos Piderit}
+\date{\today}
+
+\begin{document} % ------------------------------------------------------------
+
+\maketitle
+
+\tableofcontents
+
+\section{Introducción}
+
+% Objetivo del TP, obtener dos modelos de clasificación que permitan identificar
+% tumores malignos. Breve descripción de los datos con los que se cuenta.
+% Descripción de la estructura del informe. ¿Mención al software, paquetes de R
+% etc., utilizado?
+
+\input{tex/introduccion.tex}
+
+\section{Análisis exploratorio}\label{sec:aed}
+
+% Descripción más detallada de las variables del dataset, tipos, casos perdidos,
+% etc. Medidas resumen de la variable de respuesta y de las demás. Histogramas y
+% diagramas de dispersión de algunas ¿cuántas y cuáles? variables. ¿Quizás las
+% más "representativas"? Mencionar la alta correlación entre las tres medidas
+% resumen, mean, sd y worst, eso fundamenta el PCA.
+
+\input{tex/exploratorio.tex}
+
+\section{Estrategia de modelado}\label{sec:estmod}
+
+\input{tex/estrategia.tex}
+
+\section{Resultados}\label{sec:res}
+
+\input{tex/resultados.tex}
+
+\section{Conclusiones}\label{sec:con}
+
+\input{tex/conclusiones.tex}
+
+% Bibliografía ---------------------------------------------------------------
+\printbibliography
+\clearpage
+
+% ----------------------------------------------------------------------------
+\appendix
+
+\section{Especificaciones de los modelos seleccionados}\label{sec:anexo1}
+
+% Especificación del modelo lasso
+\begin{figure}[h]
+\begin{framed}
+\begin{itemize}
+  \item Implementación: R con el paquete \verb|{glmnet}| mediante \verb|{tidymodels}|
+  \item Hiperparámetros
+  \begin{itemize}
+    \item Coeficiente de penalización $\lambda$: 0.0056
+    \item Coeficiente de mixtura $\alpha$: 1 (exclusivamente LASSO)
+    \item Umbral de decisión: 0.2
+  \end{itemize}
+  \item Preprocesamiento: Normalización de todas las variables predictoras
+  \item Variables predictoras (entrenamiento): Todas las del conjunto de datos
+  \item Variables predictoras (seleccionadas): 
+\end{itemize}
+  \centering
+  \input{cuadros/lasso1\_coefs.tex}
+\end{framed}
+\caption{Especificaciones del modelo de regresión logística con penalización LASSO}
+\label{fig:lassoespec}
+\end{figure}
+
+% Especificación del modelo de bosques aleatorios
+\begin{figure}[h]
+\begin{framed}
+\begin{itemize}
+  \item Implementación: R con el paquete \verb|{ranger}| mediante \verb|{tidymodels}|
+  \item Semilla: 260224
+  \item Hiperparámetros
+  \begin{itemize}
+    \item Árboles por bosque: 100
+    \item Variables a probar: 1
+    \item Mín. observaciones por hoja: 10
+    \item Umbral de decisión: 0.29
+  \end{itemize}
+  \item Preprocesamiento: Normalización de todas las variables predictoras
+  \item Variables predictoras: Todas menos
+  \begin{itemize}
+    \item \verb|fractal_dimension_mean|
+    \item \verb|fractal_dimension_se|
+    \item \verb|fractal_dimension_worst|
+    \item \verb|texture_se|
+    \item \verb|smoothness_se|
+    \item \verb|symmetry_se|
+  \end{itemize}
+\end{itemize}
+\end{framed}
+\caption{Especificaciones del modelo de bosques aleatorios}
+\label{fig:rfespec}
+\end{figure}
+
+\clearpage
+
+% Cuadros --------------------------------------------------------------------
+\section{Cuadros y gráficos exploratorios}\label{sec:anexo2}
+
+% Medidas resumen de las variables
+\begin{table}[h]
+\input{cuadros/descriptivos.tex}
+  \caption{Estadísticos descriptivos de las variables según sufijo (\textit{\_mean, \_se, \_worst}) y característica de las células}
+\label{tab:resumen}
+\end{table}
+
+% Gráficos -------------------------------------------------------------------
+% Gráficos radius
+\begin{figure}[h]
+\includegraphics[width=\textwidth, center]{figuras/distribuciones\_radius.pdf}
+\caption{Histogramas de densidad de las variables asociadas a \textit{radius} según \textit{target} (fila superior) y diagramas de dispersión de las mismas variables de a pares (fila inferior)}
+\label{fig:radius}
+\end{figure}
+
+% Gráficos texture
+\begin{figure}[h]
+\includegraphics[width=\textwidth, center]{figuras/distribuciones\_texture.pdf}
+\caption{Histogramas de densidad de las variables asociadas a \textit{texture} según \textit{target} (fila superior) y diagramas de dispersión de las mismas variables de a pares (fila inferior)}
+\label{fig:texture}
+\end{figure}
+
+% Gráficos perimeter
+\begin{figure}[h]
+\includegraphics[width=\textwidth, center]{figuras/distribuciones\_perimeter.pdf}
+\caption{Histogramas de densidad de las variables asociadas a \textit{perimeter} según \textit{target} (fila superior) y diagramas de dispersión de las mismas variables de a pares (fila inferior)}
+\label{fig:perimeter}
+\end{figure}
+
+%% Gráficos area
+%\begin{figure}[h]
+%\includegraphics[width=\textwidth, center]{figuras/distribuciones\_area.pdf}
+%\caption{Histogramas de densidad de las variables asociadas a \textit{area} según \textit{target} (fila superior) y diagramas de dispersión de las mismas variables de a pares (fila inferior)}
+%\label{fig:area}
+%\end{figure}
+
+% Gráficos smoothness
+%\begin{figure}[h]
+%\includegraphics[width=\textwidth, center]{figuras/distribuciones\_smoothness.pdf}
+%\caption{Histogramas de densidad de las variables asociadas a \textit{smoothness} según \textit{target} (fila superior) y diagramas de dispersión de las mismas variables de a pares (fila inferior)}
+%\label{fig:smooth}
+%\end{figure}
+
+% Gráficos compactness
+\begin{figure}[h]
+\includegraphics[width=\textwidth, center]{figuras/distribuciones\_compactness.pdf}
+\caption{Histogramas de densidad de las variables asociadas a \textit{compactness} según \textit{target} (fila superior) y diagramas de dispersión de las mismas variables de a pares (fila inferior)}
+\label{fig:compact}
+\end{figure}
+
+% Gráficos concavity
+\begin{figure}[h]
+\includegraphics[width=\textwidth, center]{figuras/distribuciones\_concavity.pdf}
+\caption{Histogramas de densidad de las variables asociadas a \textit{concavity} según \textit{target} (fila superior) y diagramas de dispersión de las mismas variables de a pares (fila inferior)}
+\label{fig:concavity}
+\end{figure}
+
+% Gráficos concave
+\begin{figure}[h]
+\includegraphics[width=\textwidth, center]{figuras/distribuciones\_concave.pdf}
+\caption{Histogramas de densidad de las variables asociadas a \textit{concave} según \textit{target} (fila superior) y diagramas de dispersión de las mismas variables de a pares (fila inferior)}
+\label{fig:concave}
+\end{figure}
+
+% Gráficos symmetry
+\begin{figure}[h]
+\includegraphics[width=\textwidth, center]{figuras/distribuciones\_symmetry.pdf}
+\caption{Histogramas de densidad de las variables asociadas a \textit{symmetry} según \textit{target} (fila superior) y diagramas de dispersión de las mismas variables de a pares (fila inferior)}
+\label{fig:symmetry}
+\end{figure}
+
+% Gráficos fractal_dimension
+\begin{figure}[h]
+\includegraphics[width=\textwidth, center]{figuras/distribuciones\_fractal\_dimension.pdf}
+\caption{Histogramas de densidad de las variables asociadas a \textit{fractal\_dimension} según \textit{target} (fila superior) y diagramas de dispersión de las mismas variables de a pares (fila inferior)}
+\label{fig:fractal}
+\end{figure}
+
+\end{document} % --------------------------------------------------------------
+

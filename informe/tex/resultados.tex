@@ -1,0 +1,206 @@
+% Sección: Resultados
+%
+% ¿Valdrá la pena mostrar algunos resultados intermedios, anteriores a la
+% evaluación en los datos de testeo? Umbrales de decisión, métricas vs.
+% hiperparámetros, etc.
+
+\subsection{Desempeño de los modelos implementados}
+
+% Describir verbalmente el desempeño y mostrar métricas calculadas sobre los
+% datos de testeo. ¿Mostrar gráficos, modelos y métricas por modelo? ¿Mostrar
+% cuadros de métricas por modelo? Hacer una breve interpretación de los
+% resultados en relación con la temática.
+
+% Métricas de los modelos calculadas en test
+\begin{table}[h]
+\input{cuadros/metricas.tex}
+\caption{Métricas de los modelos en los datos de testeo}
+\label{tab:metricas}
+\end{table}
+
+En el cuadro \ref{tab:metricas} se presentan las métricas obtenidas por cada
+modelo sobre los datos de testeo. Los dos modelos que alcanzaron los mayores
+valores en $F_2$ fueron el de bosques aleatorios con 0.9941, y la regresión
+logística con penalización LASSO sobre las variables originales con 0.9911. En
+ambos casos la clasificación fue casi perfecta: los bosques aleatorios lograron
+una precisión de 0.971 con sólo dos falsos positivos y un \textit{recall}
+perfecto; la regresión logró una precisión de 0.957 con tres falsos positivos
+y, también, \textit{recall} perfecto. El resto de los modelos no se quedó
+demasiado atrás: El que tuvo el peor desempeño fue la regresión logística sobre
+las componentes principales de las variables originales con un puntaje
+$F_2$ de 0.955 y seis tumores mal clasificados, tres benignos y tres malignos.
+
+% Matrices de confusión de los modelos elegidos
+\begin{table}[h]
+\input{cuadros/matrices_conf.tex}
+\caption{Matrices de confusión de los dos mejores modelos}
+\label{tab:matrices}
+\end{table}
+
+Es interesante notar el efecto de la ponderación en el puntaje $F_\beta$ sobre
+el resultado. La regresión logística con penalización LASSO sobre las
+componentes principales de las predictoras tuvo la misma \textit{accuracy} que
+el modelo de bosques aleatorios (dos tumores mal clasificados). Sin embargo,
+como una de sus predicciones fue un falso positivo, terminó teniendo un puntaje
+$F_2$ menor al de los bosques aleatorios.
+
+\subsection{Descripción de los modelos seleccionados}\label{sec:detalle}
+
+% Describir más detalladamente el procedimiento de cada modelo. ¿Quizás aquí van
+% los gráficos de resultados intermedios? Mostrar los parámetros, los del pca y
+% los de las regresiones si es que fueran seleccionadas. ¿Mencionar lo de
+% tidymodels acá?
+
+\subsubsection{Bosques aleatorios}
+
+Para entrenar este modelo se utilizaron las variables originales normalizadas
+salvo las asociadas a la dimensión fractal (\verb|fractal_dimension\_mean|,
+\verb|..._se| y \verb|..._worst|) y el desvío estándar de la textura
+(\verb|texture_se|), la suavidad (\verb|smoothness_se|) y la simetría
+(\verb|symmetry_se|), que se excluyeron dado que en los histogramas de densidad
+no se vió que ofrecieran capacidad de separar las dos clases de tumores. Como
+los árboles aleatorios utilizan una única variable por \textit{split}, no tiene
+ventaja incluir aquellas cuya distribución es similar en ambas clases. Por un
+motivo similar se decidió no buscar las componentes principales de las
+variables; la alta correlación entre las predictoras no debería entrar en juego
+si en cada \textit{split} sólo se usa una de ellas\footnote{En retrospectiva,
+por ese mismo motivo quizás no hacía falta normalizar las predictoras.}.
+
+Para el modelo en sí se utilizó la implementación del paquete \verb|{ranger}| a
+través de \verb|{tidymodels}|. Los hiperparámetros de este modelo son los
+siguientes: el número de árboles a entrenar, que, tras notar que no producía
+cambios notorios en la métrica de validación, se estableció en 100, un número
+relativamente bajo para no aumentar innecesariamente el costo computacional; el
+número de observaciones mínimo por hoja, que se buscó optimizar; y el número de
+variables a considerar en cada split de cada árbol, que también se optimizó. En
+este proceso se consideraron los valores de 10, 20 y 30 observaciones mínimas
+por hoja, y entre 1 y 10 variables por split, y se buscó sobre una grilla con
+todas las combinaciones de estos dos grupos de valores. Como se mencionó antes,
+la optimización se hizo mediante validación cruzada de cinco \textit{folds}
+maximizando el área bajo la curva \textit{precision-recall}. Los \textit{folds}
+se crearon estratificando por \verb|target| para mantener la proporción de
+casos malignos dentro de cada uno.
+
+% Métricas de validación de random forest
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{figuras/rf\_metricas.pdf}
+\caption{Métricas según hiperparámetros optimizados. Bosques aleatorios. Los gráficos están segmentados según el número mínimo de observaciones por hoja.}
+\label{fig:rfmetricas}
+\end{figure}
+
+En la figura \ref{fig:rfmetricas} se puede ver la métrica de validación
+calculada según los hiperparámetros junto con la precisión y el \textit{recall}
+calculados con un umbral de 0.5. La combinación que rindió la mayor área bajo
+la curva fue una variable por split y diez observaciones mínimo por hoja de
+cada árbol con un área bajo la curva promedio de 0.985 y error estándar de
+0.004 aproximadamente. Algo que se observa es que el área no varía demasiado
+según el hiperparámetro, pero sí lo hacen la precisión y el \textit{recall}.
+
+% Acumulada de las probabilidades predichas de random forest
+\begin{figure}[h]
+  \includegraphics[width=\textwidth]{figuras/rf\_pred\_umbral.pdf}
+  \caption{Distribución acumulada de la probabilidad predicha (A) y puntaje $F_2$ según umbral de decisión (B). Modelo de bosques aleatorios.}
+\label{fig:rfpredumb}
+\end{figure}
+
+Una vez obtenidos los hiperparámetros optimizados se utilizaron las
+predicciones hechas sobre los cinco \textit{folds} para buscar el umbral de
+decisión óptimo que maximizase el puntaje $F_2$. Esto se hizo sobre el total de
+las predicciones sin distinguir el \textit{fold} al que perteneciesen. Se buscó
+sobre una grilla de 99 valores equiespaciados entre 0.01 y 0.99, y se tomó como
+óptimo el promedio de los umbrales que alcanzasen el máximo $F_2$ (ya que podía
+haber más de un valor que tocase el máximo). En la figura \ref{fig:rfpredumb}(A) se
+muestran las distribuciones acumuladas de las probabilidades predichas de ser
+un tumor maligno según la condición real del tumor y el \textit{fold} de
+validación. Se ve que el modelo logra una buena separación de los casos, pero
+pareciera que en una buena proporción de los casos malignos las probabilidades
+predichas son demasiado bajas; en los cinco \textit{folds} aproximadamente el
+12.5\% tiene una probabilidad predicha menor a 0.5. La figura
+\ref{fig:rfpredumb}(B) muestra el puntaje $F_2$ alcanzado según el umbral de
+decisión y \textit{fold}. Se puede ver que el máximo suele alcanzarse en
+valores más bajos que 0.5. La línea negra punteada se ubica en 0.29 en el eje
+$x$ e indica el mejor umbral encontrado, donde se alcanza un $F_2$ de 0.9435.
+
+En la figura \ref{fig:rfespec} del anexo \ref{sec:anexo1} se resumen las características del modelo final de forma más sintética.
+
+
+\subsubsection{Regresión logística con penalización LASSO}
+
+Para este modelo no se realizó una selección de variables ya que la
+penalización LASSO tiene como consecuencia que algunos de los coeficientes
+estimados de la regresión pueden ser exactamente 0. Se utilizaron todas las
+variables predictoras disponibles en el conjunto de datos y se las normalizó
+para poder implementar el modelo. El término de penalización LASSO es $\lambda
+\sum_{j=1}^p | \beta_j |$, donde $p$ es la cantidad de variables predictoras y
+$\beta_j$ es el coeficiente correspondiente a la predictora $j$. Como los
+coeficientes $\beta_j$ están en la unidad de sus respectivas variables, si
+estas no se normalizaran aquellas con unidades más grandes (como las
+relacionadas con \verb|area| en nuestro caso) tendrían más peso en el término y
+serían las primeras en perder influencia\footnote{De todas formas, el paquete
+\{glmnet\} normaliza las variables automáticamente, pero me pareció pertinente
+dejar por explícito, tanto en este informe como en el código de R, que es un
+paso de preprocesamiento.}.
+
+Se utilizó la implementación del paquete \verb|{glmnet}| mediante
+\verb|{tidymodels}| de R. Este paquete, en realidad, ofrece modelos lineales
+generalizados con penalización \textit{elastic net}, que es una combinación
+lineal de la penalización LASSO y \textit{Ridge}
+\parencite{tay_etal_2023_elastic}. El hiperparámetro que controla esa
+combinación es $\alpha$ (\verb|mixture| en la implementación usada), que se
+fijó en 1 para utilizar exclusivamente la penalización LASSO. Esto se hizo, por
+un lado, para simplificar la búsqueda de hiperparámetros óptimos y, por otro
+lado, porque es razonable que en este escenario sea útil seleccionar variables
+predictoras para luego priorizar qué aspectos de las células de los tumores
+medir. La búsqueda se hizo de forma análoga al modelo de bosques aleatorios; se
+creó una grilla de 25 valores equiespaciados en escala logarítmica de base 10
+entre $10^{-6}$ y $10^{-1}$ y se seleccionó el que resultase en la mayor área
+bajo la curva \textit{precision-recall}. Se utilizaron los mismos
+\textit{folds} que en la validación del modelo de bosques aleatorios.
+
+% Métricas de validación de lasso
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{figuras/lasso1\_metricas.pdf}
+\caption{Métricas según parámetro de penalización $\lambda$. Regresión logística con penalización LASSO.}
+\label{fig:lassometricas}
+\end{figure}
+
+La figura \ref{fig:lassometricas} muestra el valor de las mismas tres métricas
+que en el modelo anterior según el valor del hiperparámetro $\lambda$. El mejor
+valor encontrado fue $\lambda$ = 0.0056 con un área de 0.991 y error estándar
+de 0.0031 aproximadamente. Se ve que cuando crece el coeficiente de
+penalización la precisión (con umbral 0.5) sube y el \textit{recall} cae,
+seguramente porque el modelo está prediciendo mayormente negativos, lo cual
+reduce los falsos positivos y aumenta los falsos negativos. Para que se de este
+resultado, de todas formas, los verdaderos positivos no deberían bajar al mismo
+ritmo que los falsos positivos, caso contrario la precisión no debería cambiar
+mucho.
+
+% Acumulada de las probabilidades predichas de lasso y umbral vs F2 
+\begin{figure}[h]
+  \includegraphics[width=\textwidth]{figuras/lasso1\_pred\_umbral.pdf}
+  \caption{Distribución acumulada de la probabilidad predicha (A) y puntaje $F_2$ según umbral de decisión (B). Regresión logística con penalización LASSO.}
+\label{fig:lassopredumb}
+\end{figure}
+
+La búsqueda del umbral óptimo se realizó de la misma manera que en el modelo
+anterior. La figura \ref{fig:lassopredumb} es análoga a la figura
+\ref{fig:rfpredumb}. Se ve que este modelo también logra una buena separación
+de los casos y, en comparación con el anterior, asigna probabilidades más altas
+a los tumores malignos, con alrededor del 70\% de las observaciones malignas
+con probabilidad cercana a 1. Sin embargo, sigue habiendo casos de este tipo
+con predicciones más bajas de lo deseable que se asemejan a las de los casos
+benignos con predicciones más altas. El umbral que maximiza el puntaje $F_2$
+(calculado sobre el total de predicciones sobre los \textit{folds}) es 0.2 con
+un valor $F_2$ de 0.9595.
+
+El modelo final estimó 12 parámetros distintos de cero, incluyendo el
+interecpto, que se listan en la figura \ref{fig:lassoespec}, donde se resumen las
+especificaciones. Sorprendentemente, la mayor parte de las variables
+seleccionadas fueron los peores casos (\verb|_worst|) de ciertas variables,
+específicamente, del radio, la textura, el perímetro, la suavidad, la
+concavidad, la cantidad de secciones cóncavas y la simetría. Fueron
+seleccionadas tres variables de desvío estándar (\verb|_se|): la del radio, la
+compacidad y la dimensión fractal. Sólo una corresponde a la media
+(\verb|_mean|), la del número de secciones cóncavas. La mayoría de las
+variables aumentan las chances de que el tumor sea maligno; sólo el desvío de
+la compacidad y de la dimensión fractal reducen esas chances.

@@ -1,0 +1,33 @@
+% Sección: Introducción
+
+El objetivo del trabajo práctico fue construir dos clasificadores que, a partir
+de cierta información acerca de las características de las células que componen
+un tumor, permitan identificar si este es maligno o benigno con un grado
+aceptable de error bajo algún criterio establecido. Para ello se contó con una
+muestra de observaciones de tumores de los que se registraron tres medidas
+resumen de diez características de una cantidad desconocida de sus células
+mediante imágenes microscópicas. Los clasificadores obtenidos se seleccionaron
+de un total de seis que fueron entrenados y evaluados sobre los datos
+disponibles según su desempeño en ciertas métricas que reflejan los criterios
+antes mencionados. Como es habitual, el entrenamiento y la evaluación de los
+modelos se hicieron sobre un conjunto de entrenamiento y otro de
+\textit{testeo} respectivamente. Los modelos evaluados fueron los
+siguientes: regresión logística, regresión logísitca con penalización LASSO,
+bosques aleatorios, análisis discriminante lineal y $k$ vecinos más cercanos.
+De estos, los dos que mostraron el mejor desempeño fueron los bosques
+aleatorios y la regresión logística con penalización LASSO con las variables
+originales normalizadas en ambos casos.
+
+El informe se estructura de la siguiente manera. En la sección \ref{sec:aed} se
+da una descripción más detallada de los datos con los que se entrenaron los
+modelos de clasificación y se resaltan algunos aspectos identificados que
+tuvieron impacto sobre la estrategia de modelado. En la sección
+\ref{sec:estmod} se describe esta estrategia, en particular, algunas decisiones
+generales de preprocesamiento de los datos, el método de validación, la
+elección de las métricas de evaluación y su justificación y los modelos
+específicos a implementar. En la sección \ref{sec:res} se presentan los
+resultados de la evaluación de todos los modelos implementados sobre los datos
+de testeo y se detallan más específicamente los dos que mejor desempeño
+tuvieron junto con el procedimiento completo de modelado. Finalmente, en la
+sección \ref{sec:con} se discuten brevemente los resultados y se resaltan los
+puntos que resultaron más problemáticos en el desarrollo del trabajo práctico.

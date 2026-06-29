@@ -1,0 +1,34 @@
+% Sección: Conclusiones
+
+Los resultados del ejercicio fueron positivos; todos los modelos alcanzaron
+métricas sumamente altas en el conjunto de testeo con muy pocos casos mal
+clasificados y, más importantemente en algunos casos, sin falsos negativos.
+Este resultado, sin embargo, probablemente diga más sobre la calidad de los
+datos que sobre el ejercicio de modelado. El conjunto de datos no contaba con
+valores faltantes, no parecía haber errores en la información, y en general
+había fuertes asociaciones entre las variables predictoras y la respuesta.
+
+Uno de los dos mejores modelos es paramétrico y el otro no paramétrico. Bosques
+aleatorios tuvo un desempeño marginalmente mejor, pero la regresión logística
+con LASSO tiene la ventaja de que, por un lado, permite reducir la cantidad de
+variables que es necesario medir para obtener una predicción y, por otro lado,
+los coeficientes que estima resultan más interpretables, sobre todo en este
+caso que corresponden a las variables originales normalizadas. Es posible
+extraer la importancia de cada variable de un modelo de bosques aleatorios,
+pero las medidas de importancia no son tan directamente interpretables como los
+coeficientes de una regresión, que tienen vínculo directo con el modelo
+probabilístico que usamos para conceptualizar el fenómeno. Por estos motivos
+considero que es preferible el modelo logístico por sobre el de bosques
+aleatorios.
+
+Una de las principales dificultades del trabajo fue la falta de conocimiento
+sustantivo sobre el área del conocimiento a la que pertenecen los datos.
+Resultó difícil generar ideas a partir de las distribuciones y asociaciones
+observadas en la etapa de exploración al no tener noción de la significancia
+científica de las variables. Finalmente se utilizaron todas las variables
+disponibles en casi todos los modelos ya que no hubo motivos sustantivos para
+excluir, combinar o transformarlas más allá de lo que exigían los modelos. Esto
+también impacto en la selección de la métrica de evaluación. Se optó por usar
+el puntaje $F_\beta$, pero, sin conocimiento del área, resultó prácticamente
+imposible decidir una ponderación adecuada. Por otra parte, el error puede
+haber estado, justamente, en la elección de esa métrica.

@@ -1,0 +1,201 @@
+% Sección: Estrategia de modelado
+%
+% Mencionar, no sé en qué orden: partición en train y test; preprocesamiento de
+% los datos, normalización, pca, etc.; existencia de hiperparámetros y el método
+% utilizado para seleccionarlos, CV con 5 folds; ¿capaz aquí sí el software,
+% paquetes de R, etc.?; procedimiento general con cada modelo.
+
+Como se mencionó en la sección anterior, los datos originales se dividieron en
+un conjunto de entrenamiento, con aproximadamente un 70\% de las observaciones,
+y uno de testeo o evaluación con el resto. El primero se utilizó para entrenar
+y validar los modelos, y el segundo para calcular las métricas en base a las
+que se eligieron los dos mejores.
+
+En términos generales, la estrategia de modelado debió tomar en cuenta los
+siguientes problemas. En primer lugar, el análisis exploratorio mostró que los
+variables predictoras tienen unidades dispares y pueden llegar a presentar
+correlaciones lineales muy altas. Esto llevó a la decisión de normalizar las
+variables y de probar estrategias de reducción de la dimensión o regularización
+en algunos casos. En segundo lugar, varios de los modelos propuestos
+(enumerados en la subsección \ref{sec:modelos}) cuentan con uno o más
+hiperparámetros cuyos valores deben ser establecidos antes de la evaluación en
+los datos de testeo. En algunos casos se eligieron determinados valores en
+función de lo observado en el proceso de modelado y del costo computacional. En
+los casos en los que no, dichos valores se eligieron por validación cruzada de
+cinco folds buscando sobre grillas de valores definidas de antemano. Esto
+introdujo el problema de seleccionar una métrica en base a la cual elegir los
+valores más adecuados de los hiperparámetros. Por motivos que se detallan en la
+subsección \ref{sec:metricas} se eligió una métrica distinta a la de evaluación
+de los modelos. Por último, se debió establecer un umbral de predicción que
+determine qué casos se clasifican como malignos y cuáles como benignos.
+
+El trabajo se realizó íntegramente en R 4.5.2 y RStudio 2025.09.2
+\parencite{rcoreteam_2025_language,positteam_2025_rstudio}, fundamentalmente
+con los conjuntos de paquetes de \verb|{tidyverse}| y \verb|{tidymodels}|
+\parencite{wickham_etal_2019_welcome,kuhn_wickham_2020_tidymodels}. Estos
+ofrecen una interfaz sumamente consistente para gran parte del proceso de
+modelado, lo cual simplificó mucho el lidiar con seis modelos distintos y todos
+los pasos que implica su construcción. En cuanto a los modelos en sí,
+\verb|{tidymodels}| hace uso de otros paquetes para implementarlos. En este
+caso se usaron los paquetes \verb|{ranger}|, \verb|{glmnet}|, \verb|{kknn}| y
+\verb|{discrim}|
+\parencite{wright_ziegler_2017_ranger,friedman_etal_2010_regularization,tay_etal_2023_elastic,schliep_hechenbichler_2025_kknn}.
+
+\subsection{Métricas de evaluación y validación}\label{sec:metricas}
+
+% Aclarar que hay dos métricas usadas, área bajo la curva Precision-Recall para
+% elegir hiperparámetros, y puntaje $F_\beta$ para evaluar el desempeño en los
+% datos de testeo. ¿Otras métricas como precision y recall? Justificar $F_\beta$
+% con riesgo de no detectar cáncer vs. riesgo de diagnosticar erróneamente a
+% alguien. Mencionar problema con parámetros $\beta$ y el umbral de decisión.
+% Explicar cómo se elige el umbral en los modelos. ¿$\beta = 1$?¿Cómo justificar
+% otra ponderación?
+
+La elección de los dos mejores modelos se hizo en base al puntaje $F_\beta$
+(con $\beta = 2$) obtenido en el conjunto de testeo. Sin embargo, también se
+calculó la \textit{accuracy}, la precisión, el \textit{recall} y el área bajo la curva
+\textit{precision-recall} para poder interpretar mejor los resultados. La
+selección del puntaje $F_2$ como métrica principal se basó en la consideración
+de las consecuencias de de los falsos positivos y los falsos negativos en la
+identificación de tumores malignos. Durante todo el ejercicio se consideró como
+clase positiva a los tumores malignos.
+
+\begin{table}[h]
+\begin{tabular*}{\textwidth}[t]{@{\extracolsep{\fill}}lcc}
+\toprule
+\multirow{2}{3em}{Realidad}  & \multicolumn{2}{c}{Predicción} \\
+            \cmidrule{2-3}
+          & Maligno                 & Benigno \\
+\midrule
+Maligno   & Verdadero Positivo (VP) & Falso Negativo (FN) \\
+Benigno   & Falso Positivo (FP)     & Verdadero Negativo (VN) \\
+\bottomrule
+\end{tabular*}
+\caption{Matriz de confusión}
+\label{tab:confusion}
+\end{table}
+
+El cuadro \ref{tab:confusion} muestra la matriz de confusión que corresponde al
+problema en cuestión. Un falso negativo, en este escenario\footnote{Dado no
+estoy familiarizado con el tema y tampoco es el núcleo del trabajo práctico,
+para el razonamiento detrás de la elección de la métrica me basé en
+\url{https://en.wikipedia.org/wiki/Breast_cancer}}, es el peor de los
+resultados ya que implica que un tumor maligno no fue detectado, lo cual puede
+tener consecuencias graves sobre la salud de quien sea que lo tiene; si no se
+actúa a tiempo, el tumor puede hacer metástasis y alcanzar otras partes del
+cuerpo, poniendo en riesgo la vida del paciente. Un falso positivo, si bien no
+alcanza el mismo nivel de gravedad, sigue sin ser un buen resultado; significa
+que se identificó como maligno un tumor benigno, lo cual puede llevar a que la
+persona sufra tratamientos innecesarios. Como estamos lidiando con tumores
+mamarios, esto puede significar cirugías, radioterapia o quimioterapia,
+dependiendo de la gravedad del error. Como es razonable en cualquier problema
+de clasificación, el objetivo fue minimizar los casos mal clasificados, salvo
+que, en este caso, hay un tipo de error que es prioritario evitar por sobre el
+otro.
+
+Dos métricas habituales que sirven en este caso son la precisión y el
+\textit{recall}. El \textit{recall} o \textit{true positve rate} mide la
+proporción de los casos verdaderamente positivos que fueron predichos como
+positivos por el modelo:
+
+\begin{equation}
+\text{Recall} = \frac{\text{VP}}{\text{VP} + \text{FN}}
+\end{equation}
+
+Por su parte, la precisión o \textit{positive predictive value} mide la
+proporción de los predichos como positivos por el modelo que realmente son
+positivos:
+
+\begin{equation}
+\text{Precision} = \frac{\text{VP}}{\text{VP} + \text{FP}}
+\end{equation}
+
+Ambas métricas se aproximan a 0 a medida que aumentan los casos mal
+clasificados, y a 1 a medida que disminuyen. Sin embargo, existe cierto
+\textit{trade-off} entre ambas; si predecimos todos los casos como positivos,
+entonces no habrá falsos negativos y el \textit{recall} será 1, pero
+inevitablemente habrá falsos positivos, por lo cual la precisión se acercará a
+0. Además, puede suceder que la proporción de casos realmente positivos sobre
+el total sea muy alto, y que, por lo tanto, un mal modelo logre una alta
+precisión simplemente porque hay pocos casos realmente negativos para ser
+clasificados como positivos. En ese caso seguramente haya más falsos negativos
+y el \textit{recall} será alto.
+
+El puntaje $F_\beta$ ofrece un balance entre ambas métricas. Es su media
+armónica ponderada de forma tal que el \textit{recall} pesa $\beta$ veces más
+que la precisión:
+
+\begin{equation}
+\begin{aligned}
+  F_\beta &= \frac{(1 + \beta^2) \text{Precision} \times  \text{Recall}}{\beta^2 \text{Precision} + \text{Recall}} \\
+  &= \frac{(1 + \beta^2) \text{VP}}{(1 + \beta^2) \text{VP} + \beta^2 \text{FN} + \text{FP}}
+\end{aligned}
+\end{equation}
+
+La elección del valor de $\beta$ representó un problema difícil de resolver en
+el trabajo. En principio parece evidente que un valor de $\beta = 1$ es
+inadecuado ya que las consecuencias de los falsos negativos son más graves que
+las de los falsos positivos. Sin embargo, no es claro cómo ir más allá de un
+orden en la gravedad de los errores. Finalmente se optó por usar un valor de
+$\beta = 2$, que es relativamente arbitrario
+\footnote{Un antecedente del campo de la bioinformática que utiliza un valor de $\beta = 2$ es \cite{sanchez-herrero_etal_2024_forecasting}. Sin embargo, otros antecedentes indican que lo más común es usar $\beta = 1$, y que, de todas formas, el puntaje $F_\beta$ es inadecuado en casos clínicos \parencite{assel_vickers_2025_score}} pero mayor a 1.
+
+Las tres medidas presentadas requieren que se establezca un umbral de
+predicción que permita convertir las probabilidades de pertenecia a la clase
+maligna que estiman los modelos en una clasificación de las observaciones en
+dos clases. Este umbral se seleccionó durante la etapa de validación de los
+modelos en los datos de entrenamiento (esto se desarrollará en más detalle en
+la sección \ref{sec:detalle}).
+
+Como se mencionó anteriormente, para elegir los hiperparámetros de algunos
+modelos se realizó una validación cruzada sobre cinco folds. La métrica que se
+buscó maximizar en este caso fue el área bajo la curva
+\textit{precision-recall}, no el puntaje $F_2$, ya que la primera no depende
+del umbral de decisión y también refleja un balance entre ambas medidas. De lo
+contrario, se debería haber incluido el umbral como hiperparámetro a optimizar
+durante la validación cruzada, lo cual hubiese complejizado la búsqueda.
+
+\subsection{Modelos a implementar}\label{sec:modelos}
+
+% Enumerar y describir brevemente los modelos a implementar. Mencionar los
+% hiperparámetros que tiene cada uno, cuáles van a ser optimizados y cuáles no.
+% Justificar los valores utilizados para los que no se optimizan.
+
+Los modelos que se implementaron fueron los siguientes:
+
+\begin{enumerate}
+
+  \item Regresión logística sobre las componentes principales de las variables
+    predictoras normalizadas. Se optimizó el número de componentes a utilizar
+    mediante validación cruzada. Se decidió hacer una reducción de la dimensión
+    dada la alta correlación que se encontró entre las variables predictoras
+    durante el análisis exploratorio.
+  \item Regresión logística con penalización LASSO sobre las variables
+    predictoras originales normalizadas. Se optimizó el hiperparámetro de
+    penalización $\lambda$ mediante validación cruzada. Se incluyó este modelo
+    ya que la penalización LASSO no sólo permite seleccionar variables
+    relevantes, sino que también enfrenta el problema de la correlación entre
+    las predictoras limitando el tamaño de los coeficientes.
+  \item Regresión logística con penalización LASSO sobre las componentes
+    principales de las variables predictoras normalizadas. Al igual que en el
+    modelo anterior, se optimizó el hiperparámetro $\lambda$. Se incluyó este
+    modelo como método alternativo de selección de componentes principales; el
+    primer modelo selecciona las primeras $n$ componentes, mientras que este
+    selecciona $m$ componentes que no necesariamente son las primeras.
+  \item Bosques aleatorios sobre las variables predictoras originales
+    normalizadas. Este modelo cuenta con tres hiperparámetros (al menos en la
+    implementación usada): La cantidad de árboles por bosque, la cantidad
+    mínima de observaciones por hoja, y la cantidad de variables a utilizar por
+    \textit{split} en cada árbol. Durante la validación se notó que la cantidad
+    de árboles no afectaba notoriamente el desempeño del modelo, por lo cual se
+    eligió usar 100 árboles y se optimizaron los otros dos parámetros (sobre
+    grillas reducidas para no aumentar demasiado el costo computacional).
+  \item Análisis discriminante lineal sobre las componentes principales de las
+    variables predictoras normalizadas. Se optimizó el número de componentes a
+    incluir en el modelo. Se utilizaron las componentes principales ya que
+    durante el modelado se observó que usando sólo las variables normalizadas
+    el modelo tenía un desempeño mucho peor que el del resto.
+  \item $K$ vecinos más cercanos sobre las variables predictoras originales
+    normalizadas. Se optimizó la cantidad de vecinos.
+
+\end{enumerate}
