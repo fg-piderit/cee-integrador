@@ -17,7 +17,7 @@ variables predictoras tienen unidades dispares y pueden llegar a presentar
 correlaciones lineales muy altas. Esto llevó a la decisión de normalizar las
 variables y de probar estrategias de reducción de la dimensión o regularización
 en algunos casos. En segundo lugar, varios de los modelos propuestos
-(enumerados en la subsección \ref{sec:modelos}) cuentan con uno o más
+(enumerados en la Subsección \ref{sec:modelos}) cuentan con uno o más
 hiperparámetros cuyos valores deben ser establecidos antes de la evaluación en
 los datos de testeo. En algunos casos se eligieron determinados valores en
 función de lo observado en el proceso de modelado y del costo computacional. En
@@ -25,7 +25,7 @@ los casos en los que no, dichos valores se eligieron por validación cruzada de
 cinco folds buscando sobre grillas de valores definidas de antemano. Esto
 introdujo el problema de seleccionar una métrica en base a la cual elegir los
 valores más adecuados de los hiperparámetros. Por motivos que se detallan en la
-subsección \ref{sec:metricas} se eligió una métrica distinta a la de evaluación
+Subsección \ref{sec:metricas} se eligió una métrica distinta a la de evaluación
 de los modelos. Por último, se debió establecer un umbral de predicción que
 determine qué casos se clasifican como malignos y cuáles como benignos.
 
@@ -56,7 +56,7 @@ La elección de los dos mejores modelos se hizo en base al puntaje $F_\beta$
 calculó la \textit{accuracy}, la precisión, el \textit{recall} y el área bajo la curva
 \textit{precision-recall} para poder interpretar mejor los resultados. La
 selección del puntaje $F_2$ como métrica principal se basó en la consideración
-de las consecuencias de de los falsos positivos y los falsos negativos en la
+de las consecuencias de los falsos positivos y los falsos negativos en la
 identificación de tumores malignos. Durante todo el ejercicio se consideró como
 clase positiva a los tumores malignos.
 
@@ -75,7 +75,7 @@ Benigno   & Falso Positivo (FP)     & Verdadero Negativo (VN) \\
 \label{tab:confusion}
 \end{table}
 
-El cuadro \ref{tab:confusion} muestra la matriz de confusión que corresponde al
+El Cuadro \ref{tab:confusion} muestra la matriz de confusión que corresponde al
 problema en cuestión. Un falso negativo, en este escenario\footnote{Dado no
 estoy familiarizado con el tema y tampoco es el núcleo del trabajo práctico,
 para el razonamiento detrás de la elección de la métrica me basé en
@@ -145,7 +145,7 @@ predicción que permita convertir las probabilidades de pertenecia a la clase
 maligna que estiman los modelos en una clasificación de las observaciones en
 dos clases. Este umbral se seleccionó durante la etapa de validación de los
 modelos en los datos de entrenamiento (esto se desarrollará en más detalle en
-la sección \ref{sec:detalle}).
+la Sección \ref{sec:detalle}).
 
 Como se mencionó anteriormente, para elegir los hiperparámetros de algunos
 modelos se realizó una validación cruzada sobre cinco folds. La métrica que se
@@ -184,7 +184,7 @@ Los modelos que se implementaron fueron los siguientes:
     selecciona $m$ componentes que no necesariamente son las primeras.
   \item Bosques aleatorios sobre las variables predictoras originales
     normalizadas. Este modelo cuenta con tres hiperparámetros (al menos en la
-    implementación usada): La cantidad de árboles por bosque, la cantidad
+    implementación usada): la cantidad de árboles por bosque, la cantidad
     mínima de observaciones por hoja, y la cantidad de variables a utilizar por
     \textit{split} en cada árbol. Durante la validación se notó que la cantidad
     de árboles no afectaba notoriamente el desempeño del modelo, por lo cual se

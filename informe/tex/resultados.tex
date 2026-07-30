@@ -18,7 +18,7 @@
 \label{tab:metricas}
 \end{table}
 
-En el cuadro \ref{tab:metricas} se presentan las métricas obtenidas por cada
+En el Cuadro \ref{tab:metricas} se presentan las métricas obtenidas por cada
 modelo sobre los datos de testeo. Los dos modelos que alcanzaron los mayores
 valores en $F_2$ fueron el de bosques aleatorios con 0.9941, y la regresión
 logística con penalización LASSO sobre las variables originales con 0.9911. En
@@ -26,7 +26,7 @@ ambos casos la clasificación fue casi perfecta: los bosques aleatorios lograron
 una precisión de 0.971 con sólo dos falsos positivos y un \textit{recall}
 perfecto; la regresión logró una precisión de 0.957 con tres falsos positivos
 y, también, \textit{recall} perfecto. El resto de los modelos no se quedó
-demasiado atrás: El que tuvo el peor desempeño fue la regresión logística sobre
+demasiado atrás: el que tuvo el peor desempeño fue la regresión logística sobre
 las componentes principales de las variables originales con un puntaje
 $F_2$ de 0.955 y seis tumores mal clasificados, tres benignos y tres malignos.
 
@@ -88,7 +88,7 @@ casos malignos dentro de cada uno.
 \label{fig:rfmetricas}
 \end{figure}
 
-En la figura \ref{fig:rfmetricas} se puede ver la métrica de validación
+En la Figura \ref{fig:rfmetricas} se puede ver la métrica de validación
 calculada según los hiperparámetros junto con la precisión y el \textit{recall}
 calculados con un umbral de 0.5. La combinación que rindió la mayor área bajo
 la curva fue una variable por split y diez observaciones mínimo por hoja de
@@ -109,7 +109,7 @@ decisión óptimo que maximizase el puntaje $F_2$. Esto se hizo sobre el total d
 las predicciones sin distinguir el \textit{fold} al que perteneciesen. Se buscó
 sobre una grilla de 99 valores equiespaciados entre 0.01 y 0.99, y se tomó como
 óptimo el promedio de los umbrales que alcanzasen el máximo $F_2$ (ya que podía
-haber más de un valor que tocase el máximo). En la figura \ref{fig:rfpredumb}(A) se
+haber más de un valor que tocase el máximo). En la Figura \ref{fig:rfpredumb}(A) se
 muestran las distribuciones acumuladas de las probabilidades predichas de ser
 un tumor maligno según la condición real del tumor y el \textit{fold} de
 validación. Se ve que el modelo logra una buena separación de los casos, pero
@@ -121,7 +121,7 @@ decisión y \textit{fold}. Se puede ver que el máximo suele alcanzarse en
 valores más bajos que 0.5. La línea negra punteada se ubica en 0.29 en el eje
 $x$ e indica el mejor umbral encontrado, donde se alcanza un $F_2$ de 0.9435.
 
-En la figura \ref{fig:rfespec} del anexo \ref{sec:anexo1} se resumen las características del modelo final de forma más sintética.
+En el Cuadro \ref{fig:rfespec} del Anexo \ref{sec:anexo1} se resumen las características del modelo final de forma más sintética.
 
 
 \subsubsection{Regresión logística con penalización LASSO}
@@ -164,13 +164,13 @@ bajo la curva \textit{precision-recall}. Se utilizaron los mismos
 \label{fig:lassometricas}
 \end{figure}
 
-La figura \ref{fig:lassometricas} muestra el valor de las mismas tres métricas
+La Figura \ref{fig:lassometricas} muestra el valor de las mismas tres métricas
 que en el modelo anterior según el valor del hiperparámetro $\lambda$. El mejor
 valor encontrado fue $\lambda$ = 0.0056 con un área de 0.991 y error estándar
 de 0.0031 aproximadamente. Se ve que cuando crece el coeficiente de
 penalización la precisión (con umbral 0.5) sube y el \textit{recall} cae,
 seguramente porque el modelo está prediciendo mayormente negativos, lo cual
-reduce los falsos positivos y aumenta los falsos negativos. Para que se de este
+reduce los falsos positivos y aumenta los falsos negativos. Para que se dé este
 resultado, de todas formas, los verdaderos positivos no deberían bajar al mismo
 ritmo que los falsos positivos, caso contrario la precisión no debería cambiar
 mucho.
@@ -183,7 +183,7 @@ mucho.
 \end{figure}
 
 La búsqueda del umbral óptimo se realizó de la misma manera que en el modelo
-anterior. La figura \ref{fig:lassopredumb} es análoga a la figura
+anterior. La Figura \ref{fig:lassopredumb} es análoga a la figura
 \ref{fig:rfpredumb}. Se ve que este modelo también logra una buena separación
 de los casos y, en comparación con el anterior, asigna probabilidades más altas
 a los tumores malignos, con alrededor del 70\% de las observaciones malignas
@@ -194,7 +194,7 @@ benignos con predicciones más altas. El umbral que maximiza el puntaje $F_2$
 un valor $F_2$ de 0.9595.
 
 El modelo final estimó 12 parámetros distintos de cero, incluyendo el
-interecpto, que se listan en la figura \ref{fig:lassoespec}, donde se resumen las
+intercepto, que se listan en el Cuadro \ref{fig:lassoespec}, donde se resumen las
 especificaciones. Sorprendentemente, la mayor parte de las variables
 seleccionadas fueron los peores casos (\verb|_worst|) de ciertas variables,
 específicamente, del radio, la textura, el perímetro, la suavidad, la

@@ -17,7 +17,7 @@ y el peor caso) de diez características celulares listadas a continuación:
   \item \verb|compactness|: Qué tan compacta o extendida es la célula
   \item \verb|concavity|: Profundidad de las partes cóncavas del contorno de las células
   \item \verb|concave|: Número de secciones cóncavas del contorno de las células
-  \item \verb|symmetry|: Qué tan simétrica es la fórma de las células
+  \item \verb|symmetry|: Qué tan simétrica es la forma de las células
   \item \verb|fractal_dimension|: Complejidad del borde de las células
 \end{itemize}
 
@@ -32,7 +32,7 @@ se utilizó para el análisis exploratorio, el entrenamiento y la validación.
 
 En los datos de entrenamiento la proporción de tumores malignos es 0.3643
 aproximadamente. Afortunadamente no hay datos perdidos en ninguna de las
-variables. En el cuadro \ref{tab:resumen} se muestran algunas medidas resumen
+variables. En el Cuadro \ref{tab:resumen} se muestran algunas medidas resumen
 de las variables predictoras, agrupadas según la medida resumen (valga la
 redundancia) a la que correspondan. Las variables predictoras tienen unidades sumamente
 dispares; por ejemplo, \verb|concave_mean| tiene valores entre 0 y 0.19
@@ -43,9 +43,9 @@ que otras. Todas las variables tienen rangos positivos y las posiciones de sus
 medias y medianas sugieren que la mayoría son asimétricas con un sesgo hacia
 los valores más altos.
 
-Las figuras \ref{fig:area}-\ref{fig:smooth} y
+Las Figuras \ref{fig:area}-\ref{fig:smooth} y
 \ref{fig:radius}-\ref{fig:fractal}\footnote{La mayoría de los gráficos
-exploratorios se presentan en el anexo \ref{sec:anexo2} ya que son numerosos y
+exploratorios se presentan en el Anexo \ref{sec:anexo2} ya que son numerosos y
 ocupan bastante espacio} ofrecen visualizaciones de las distribuciones de las
 variables del conjunto de datos. Cada figura corresponde a una característica
 de las células; la fila superior muestra histogramas de densidad según el valor
@@ -64,7 +64,7 @@ Si nos enfocamos en los histogramas, se puede observar que, efectivamente,
 algunas variables tienen marcados sesgos hacia los valores más altos, en
 particular las que corresponden a los desvíos estándar de las características
 de los tumores. Estas variables también tienden a presentar valores extremos;
-esto se puede apreciar en la figura \ref{fig:area}, por ejemplo, en el desvío
+esto se puede apreciar en la Figura \ref{fig:area}, por ejemplo, en el desvío
 estándar del área de las células. También se observa que en casi todas las
 variables los tumores malignos tienden a tener valores más altos. Las
 excepciones son las variables relacionadas con la dimensión fractal del
@@ -75,7 +75,7 @@ más simétricas que la distribución general de la variable.
 
 Un aspecto relevante de las variables es su dependencia; es de esperar que las
 que corresponden a las mismas características de las células estén relacionadas
-entre sí. Si examinamos los diagramas de dispersión de las figuras
+entre sí. Si examinamos los diagramas de dispersión de las Figuras
 \ref{fig:area}-\ref{fig:smooth} y \ref{fig:radius}-\ref{fig:fractal} vemos que,
 efectivamente, tienden a estar fuertemente asociadas con un patrón bastante
 lineal. La correlación es más fuerte entre la media y el peor caso, con el
@@ -93,9 +93,9 @@ para la suavidad hasta 0.86 para el área.
 Si nos enfocamos en la condición de maligno o benigno de los tumores en los
 diagramas de dispersión, vemos que, a diferencia de lo que se ve en los
 histogramas, hay fronteras bastante nítidas entre ambos tipos en algunas de las
-características. Esto es muy claro en las variables asociadas al radio (figura
-\ref{fig:radius}), el perímetro (figura \ref{fig:perimeter}) y el área (figura
-\ref{fig:area}). En otros casos, como en las variables de suavidad (figura
+características. Esto es muy claro en las variables asociadas al radio (Figura
+\ref{fig:radius}), el perímetro (Figura \ref{fig:perimeter}) y el área (Figura
+\ref{fig:area}). En otros casos, como en las variables de suavidad (Figura
 \ref{fig:smooth}), no parece haber una frontera muy clara. Nada de esto
 descarta que sí exista una frontera nítida en dimensiones más altas; las
 visualizaciones que se hicieron no van más allá de las dos dimensiones y,
