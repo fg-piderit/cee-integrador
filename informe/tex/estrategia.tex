@@ -52,13 +52,14 @@ caso se usaron los paquetes \verb|{ranger}|, \verb|{glmnet}|, \verb|{kknn}| y
 % otra ponderación?
 
 La elección de los dos mejores modelos se hizo en base al puntaje $F_\beta$
-(con $\beta = 2$) obtenido en el conjunto de testeo. Sin embargo, también se
-calculó la \textit{accuracy}, la precisión, el \textit{recall} y el área bajo la curva
-\textit{precision-recall} para poder interpretar mejor los resultados. La
-selección del puntaje $F_2$ como métrica principal se basó en la consideración
-de las consecuencias de los falsos positivos y los falsos negativos en la
-identificación de tumores malignos. Durante todo el ejercicio se consideró como
-clase positiva a los tumores malignos.
+(definido en los párrafos siguientes) con $\beta = 2$ y calculado sobre el
+conjunto de testeo. Sin embargo, también se calculó la \textit{accuracy}, la
+precisión, el \textit{recall} y el área bajo la curva \textit{precision-recall}
+para poder interpretar mejor los resultados. La selección del puntaje $F_2$
+como métrica principal se basó en la consideración de las consecuencias de los
+falsos positivos y los falsos negativos en la identificación de tumores
+malignos. Durante todo el ejercicio se consideró como clase positiva a los
+tumores malignos.
 
 \begin{table}[h]
 \begin{tabular*}{\textwidth}[t]{@{\extracolsep{\fill}}lcc}
@@ -76,18 +77,17 @@ Benigno   & Falso Positivo (FP)     & Verdadero Negativo (VN) \\
 \end{table}
 
 El Cuadro \ref{tab:confusion} muestra la matriz de confusión que corresponde al
-problema en cuestión. Un falso negativo, en este escenario\footnote{Dado no
-estoy familiarizado con el tema y tampoco es el núcleo del trabajo práctico,
-para el razonamiento detrás de la elección de la métrica me basé en
-\url{https://en.wikipedia.org/wiki/Breast_cancer}}, es el peor de los
-resultados ya que implica que un tumor maligno no fue detectado, lo cual puede
-tener consecuencias graves sobre la salud de quien sea que lo tiene; si no se
-actúa a tiempo, el tumor puede hacer metástasis y alcanzar otras partes del
-cuerpo, poniendo en riesgo la vida del paciente. Un falso positivo, si bien no
-alcanza el mismo nivel de gravedad, sigue sin ser un buen resultado; significa
-que se identificó como maligno un tumor benigno, lo cual puede llevar a que la
-persona sufra tratamientos innecesarios. Como estamos lidiando con tumores
-mamarios, esto puede significar cirugías, radioterapia o quimioterapia,
+problema en cuestión. Un falso negativo, en este escenario, es el peor de los
+resultados ya que implica que un tumor maligno no fue detectado. Si bien el
+diagnóstico definitivo del cáncer no se obtiene mediante un único método, su
+detección temprana es fundamental para aumentar las chances de supervivencia de
+las pacientes y cualquier retraso pone en riesgo sus vidas
+\parencite{saunders_jassal_2009_breast}. Un falso positivo, si bien no alcanza
+el mismo nivel de gravedad, sigue sin ser un buen resultado; significa que se
+identificó como maligno un tumor benigno, lo cual puede llevar a que la persona
+deba someterse a estudios invasivos como biopsias o a otros tratamientos. Como
+estamos lidiando con tumores mamarios, esto puede significar cirugías,
+radioterapia o quimioterapia \parencite{saunders_jassal_2009_breast},
 dependiendo de la gravedad del error. Como es razonable en cualquier problema
 de clasificación, el objetivo fue minimizar los casos mal clasificados, salvo
 que, en este caso, hay un tipo de error que es prioritario evitar por sobre el
@@ -136,9 +136,13 @@ La elección del valor de $\beta$ representó un problema difícil de resolver e
 el trabajo. En principio parece evidente que un valor de $\beta = 1$ es
 inadecuado ya que las consecuencias de los falsos negativos son más graves que
 las de los falsos positivos. Sin embargo, no es claro cómo ir más allá de un
-orden en la gravedad de los errores. Finalmente se optó por usar un valor de
-$\beta = 2$, que es relativamente arbitrario
-\footnote{Un antecedente del campo de la bioinformática que utiliza un valor de $\beta = 2$ es \cite{sanchez-herrero_etal_2024_forecasting}. Sin embargo, otros antecedentes indican que lo más común es usar $\beta = 1$, y que, de todas formas, el puntaje $F_\beta$ es inadecuado en casos clínicos \parencite{assel_vickers_2025_score}} pero mayor a 1.
+orden en la gravedad de los errores. Un antecedente del campo de la
+bioinformática que utiliza un valor de $\beta = 2$ es
+\textcite{sanchez-herrero_etal_2024_forecasting}. Sin embargo, otros antecedentes
+indican que lo más común es usar $\beta = 1$, y que, de todas formas, el
+puntaje $F_\beta$ es inadecuado en casos clínicos
+\parencite{assel_vickers_2025_score}. Finalmente se optó por usar un valor de
+$\beta = 2$, que es relativamente arbitrario pero mayor a 1.
 
 Las tres medidas presentadas requieren que se establezca un umbral de
 predicción que permita convertir las probabilidades de pertenecia a la clase

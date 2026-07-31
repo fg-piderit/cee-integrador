@@ -6,17 +6,17 @@ un tumor, permitan identificar si este es maligno o benigno con un grado
 aceptable de error bajo algún criterio establecido. Para ello se contó con una
 muestra de observaciones de tumores de los que se registraron tres medidas
 resumen de diez características de una cantidad desconocida de sus células
-mediante imágenes microscópicas. Los clasificadores obtenidos se seleccionaron
-de un total de seis que fueron entrenados y evaluados sobre los datos
-disponibles según su desempeño en ciertas métricas que reflejan los criterios
-antes mencionados. Como es habitual, el entrenamiento y la evaluación de los
-modelos se hicieron sobre un conjunto de entrenamiento y otro de
-\textit{testeo} respectivamente. Los modelos evaluados fueron los
-siguientes: regresión logística, regresión logísitca con penalización LASSO,
-bosques aleatorios, análisis discriminante lineal y $k$ vecinos más cercanos.
-De estos, los dos que mostraron el mejor desempeño fueron los bosques
-aleatorios y la regresión logística con penalización LASSO con las variables
-originales normalizadas en ambos casos.
+mediante imágenes microscópicas \parencite{williamwolberg_1993_breast}. Los
+clasificadores obtenidos se seleccionaron de un total de seis que fueron
+entrenados y evaluados sobre los datos disponibles según su desempeño en
+ciertas métricas que reflejan los criterios antes mencionados. Como es
+habitual, el entrenamiento y la evaluación de los modelos se hicieron sobre un
+conjunto de entrenamiento y otro de \textit{testeo} respectivamente. Los
+modelos evaluados fueron los siguientes: regresión logística, regresión
+logísitca con penalización LASSO, bosques aleatorios, análisis discriminante
+lineal y $k$ vecinos más cercanos. De estos, los dos que mostraron el mejor
+desempeño fueron los bosques aleatorios y la regresión logística con
+penalización LASSO con las variables originales normalizadas en ambos casos.
 
 El informe se estructura de la siguiente manera. En la Sección \ref{sec:aed} se
 da una descripción más detallada de los datos con los que se entrenaron los

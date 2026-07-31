@@ -63,8 +63,7 @@ los árboles aleatorios utilizan una única variable por \textit{split}, no tien
 ventaja incluir aquellas cuya distribución es similar en ambas clases. Por un
 motivo similar se decidió no buscar las componentes principales de las
 variables; la alta correlación entre las predictoras no debería entrar en juego
-si en cada \textit{split} sólo se usa una de ellas\footnote{En retrospectiva,
-por ese mismo motivo quizás no hacía falta normalizar las predictoras.}.
+si en cada \textit{split} sólo se usa una de ellas.
 
 Para el modelo en sí se utilizó la implementación del paquete \verb|{ranger}| a
 través de \verb|{tidymodels}|. Los hiperparámetros de este modelo son los
@@ -136,10 +135,9 @@ $\beta_j$ es el coeficiente correspondiente a la predictora $j$. Como los
 coeficientes $\beta_j$ están en la unidad de sus respectivas variables, si
 estas no se normalizaran aquellas con unidades más grandes (como las
 relacionadas con \verb|area| en nuestro caso) tendrían más peso en el término y
-serían las primeras en perder influencia\footnote{De todas formas, el paquete
-\{glmnet\} normaliza las variables automáticamente, pero me pareció pertinente
-dejar por explícito, tanto en este informe como en el código de R, que es un
-paso de preprocesamiento.}.
+serían las primeras en perder influencia. Si bien el paquete \{glmnet\}
+normaliza las variables de forma automática, se optó por dejar por explícito
+este paso del preprocesamiento de los datos en el código de R.
 
 Se utilizó la implementación del paquete \verb|{glmnet}| mediante
 \verb|{tidymodels}| de R. Este paquete, en realidad, ofrece modelos lineales
