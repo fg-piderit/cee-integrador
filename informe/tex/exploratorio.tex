@@ -34,9 +34,10 @@ se utilizó para el análisis exploratorio, el entrenamiento y la validación.
 
 En los datos de entrenamiento la proporción de tumores malignos es 0.3643
 aproximadamente. Afortunadamente no hay datos perdidos en ninguna de las
-variables. En el Cuadro \ref{tab:resumen} se muestran algunas medidas resumen
-de las variables predictoras, agrupadas según la medida resumen (valga la
-redundancia) a la que correspondan. Las variables predictoras tienen unidades sumamente
+variables. En el Cuadro \ref{tab:resumen}, presentado en el Anexo
+\ref{sec:anexo2} dada su extensión, se muestran algunas medidas resumen de las
+variables predictoras, agrupadas según la medida resumen (valga la redundancia)
+a la que correspondan. Las variables predictoras tienen unidades sumamente
 dispares; por ejemplo, \verb|concave_mean| tiene valores entre 0 y 0.19
 secciones cóncavas mientras que \verb|area_mean| los tiene entre 143 y 2501
 unidades de área. Esta información es relevante ya que querríamos evitar que
@@ -45,15 +46,15 @@ que otras. Todas las variables tienen rangos positivos y las posiciones de sus
 medias y medianas sugieren que la mayoría son asimétricas con un sesgo hacia
 los valores más altos.
 
-Las Figuras \ref{fig:area}-\ref{fig:smooth} y
-\ref{fig:radius}-\ref{fig:fractal}\footnote{La mayoría de los gráficos
-exploratorios se presentan en el Anexo \ref{sec:anexo2} ya que son numerosos y
-ocupan bastante espacio} ofrecen visualizaciones de las distribuciones de las
-variables del conjunto de datos. Cada figura corresponde a una característica
-de las células; la fila superior muestra histogramas de densidad según el valor
-de \verb|target| para cada medida resumen y la fila inferior muestra un
-diagrama de dispersión por cada combinación de dos de esas medidas con los
-puntos coloreados según los valores de \verb|target|.
+Las Figuras \ref{fig:area} y \ref{fig:smooth} ofrecen visualizaciones de las
+distribuciones de las variables asociadas a \verb|area| y \verb|smoothness|. Las
+Figuras \ref{fig:radius}-\ref{fig:fractal}, presentadas en el Anexo
+\ref{sec:anexo2}, muestran lo mismo para las variables asociadas a las demás
+características de las células. La fila superior de cada una muestra
+histogramas de densidad según el valor de \verb|target| para cada medida
+resumen y la fila inferior muestra un diagrama de dispersión por cada
+combinación de dos de esas medidas con los puntos coloreados según los valores
+de \verb|target|.
 
 % Gráficos area
 \begin{figure}[h]
@@ -82,7 +83,7 @@ entre sí. Si examinamos los diagramas de dispersión de las Figuras
 efectivamente, tienden a estar fuertemente asociadas con un patrón bastante
 lineal. La correlación es más fuerte entre la media y el peor caso, con el
 coeficiente $\rho$ de pearson yendo de 0.688 para la simetría hasta 0.9718 para
-el perimetro. Es más débil entre la media y el desvío, yendo de 0.3505 para la
+el perímetro. Es más débil entre la media y el desvío, yendo de 0.3505 para la
 suavidad hasta 0.8077 para el área, y entre el desvío y el peor caso, de 0.4035
 para la suavidad hasta 0.86 para el área. 
 

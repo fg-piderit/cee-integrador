@@ -14,7 +14,7 @@
 % Métricas de los modelos calculadas en test
 \begin{table}[h]
 \input{cuadros/metricas.tex}
-\caption{Métricas de los modelos en los datos de testeo}
+\caption{Métricas de los modelos en los datos de testeo. Se presentan en orden descendiente según el puntaje $F_2$ obtenido en el conjunto de testeo.}
 \label{tab:metricas}
 \end{table}
 
@@ -41,8 +41,9 @@ Es interesante notar el efecto de la ponderación en el puntaje $F_\beta$ sobre
 el resultado. La regresión logística con penalización LASSO sobre las
 componentes principales de las predictoras tuvo la misma \textit{accuracy} que
 el modelo de bosques aleatorios (dos tumores mal clasificados). Sin embargo,
-como una de sus predicciones fue un falso positivo, terminó teniendo un puntaje
-$F_2$ menor al de los bosques aleatorios.
+como se puede ver en el Cuadro \ref{tab:matrices}, una de sus predicciones fue
+un falso positivo, por lo cual terminó teniendo un puntaje $F_2$ menor al de
+los bosques aleatorios.
 
 \subsection{Descripción de los modelos seleccionados}\label{sec:detalle}
 
@@ -83,7 +84,7 @@ casos malignos dentro de cada uno.
 % Métricas de validación de random forest
 \begin{figure}[h]
 \includegraphics[width=\textwidth]{figuras/rf\_metricas.pdf}
-\caption{Métricas según hiperparámetros optimizados. Bosques aleatorios. Los gráficos están segmentados según el número mínimo de observaciones por hoja.}
+\caption{Métricas de desempeño del modelo de bosques aleatorios según hiperparámetros optimizados. Los gráficos están segmentados según el número mínimo de observaciones por hoja.}
 \label{fig:rfmetricas}
 \end{figure}
 
@@ -98,7 +99,7 @@ según el hiperparámetro, pero sí lo hacen la precisión y el \textit{recall}.
 % Acumulada de las probabilidades predichas de random forest
 \begin{figure}[h]
   \includegraphics[width=\textwidth]{figuras/rf\_pred\_umbral.pdf}
-  \caption{Distribución acumulada de la probabilidad predicha (A) y puntaje $F_2$ según umbral de decisión (B). Modelo de bosques aleatorios.}
+  \caption{(A) Distribución acumulada de las probabilidades predichas y (B) puntaje $F_2$ según umbral de decisión correspondientes al modelo de bosques aleatorios. La línea punteada vertical indica el umbral de decisión elegido.}
 \label{fig:rfpredumb}
 \end{figure}
 
@@ -130,14 +131,14 @@ penalización LASSO tiene como consecuencia que algunos de los coeficientes
 estimados de la regresión pueden ser exactamente 0. Se utilizaron todas las
 variables predictoras disponibles en el conjunto de datos y se las normalizó
 para poder implementar el modelo. El término de penalización LASSO es $\lambda
-\sum_{j=1}^p | \beta_j |$, donde $p$ es la cantidad de variables predictoras y
-$\beta_j$ es el coeficiente correspondiente a la predictora $j$. Como los
-coeficientes $\beta_j$ están en la unidad de sus respectivas variables, si
-estas no se normalizaran aquellas con unidades más grandes (como las
-relacionadas con \verb|area| en nuestro caso) tendrían más peso en el término y
-serían las primeras en perder influencia. Si bien el paquete \{glmnet\}
-normaliza las variables de forma automática, se optó por dejar por explícito
-este paso del preprocesamiento de los datos en el código de R.
+\sum_{j=1}^p | \beta_j |$, donde $p$ es la cantidad de variables predictoras,
+en este caso 30, y $\beta_j$ es el coeficiente correspondiente a la predictora
+$j$. Como los coeficientes $\beta_j$ están en la unidad de sus respectivas
+variables, si estas no se normalizaran aquellas con unidades más grandes (como
+las relacionadas con \verb|area| en nuestro caso) tendrían más peso en el
+término y serían las primeras en perder influencia. Si bien el paquete
+\{glmnet\} normaliza las variables de forma automática, se optó por dejar por
+explícito este paso del preprocesamiento de los datos en el código de R.
 
 Se utilizó la implementación del paquete \verb|{glmnet}| mediante
 \verb|{tidymodels}| de R. Este paquete, en realidad, ofrece modelos lineales
@@ -158,7 +159,7 @@ bajo la curva \textit{precision-recall}. Se utilizaron los mismos
 % Métricas de validación de lasso
 \begin{figure}[h]
 \includegraphics[width=\textwidth]{figuras/lasso1\_metricas.pdf}
-\caption{Métricas según parámetro de penalización $\lambda$. Regresión logística con penalización LASSO.}
+\caption{Métricas de desempeño de la regresión logística con penalización LASSO según parámetro de penalización $\lambda$.}
 \label{fig:lassometricas}
 \end{figure}
 
@@ -176,7 +177,7 @@ mucho.
 % Acumulada de las probabilidades predichas de lasso y umbral vs F2 
 \begin{figure}[h]
   \includegraphics[width=\textwidth]{figuras/lasso1\_pred\_umbral.pdf}
-  \caption{Distribución acumulada de la probabilidad predicha (A) y puntaje $F_2$ según umbral de decisión (B). Regresión logística con penalización LASSO.}
+  \caption{(A) Distribución acumulada de las probabilidades predichas y (B) puntaje $F_2$ según umbral de decisión correspondientes al modelo de regresión logística con penalización LASSO. La línea punteada vertical indica el umbral de decisión elegido.}
 \label{fig:lassopredumb}
 \end{figure}
 
